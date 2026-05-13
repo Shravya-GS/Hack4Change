@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>FinGuard Pro — AI Financial Shield</title>
+  <meta name="description" content="AI-powered financial monitoring system with geo-aware spending alerts, SMS parsing, and smart budget caps." />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Ambient Background Orbs -->
+  <div class="ambient-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div id="app">
+
+    <!-- ===================== CRITICAL ALERT OVERLAY (Rule 4) ===================== -->
+    <div id="critical-overlay" class="critical-overlay hidden">
+      <div class="critical-pulsing-bg"></div>
+      <div class="critical-content">
+        <div class="critical-strobe"></div>
+        <div class="critical-icon-wrap">
+          <i class="fas fa-hand-paper"></i>
+        </div>
+        <h1 class="critical-title">STOP. BREATHE.<br>READ THIS.</h1>
+        <div id="critical-body" class="critical-body"></div>
+        <div class="critical-btns">
+          <button id="btn-leave-zone" class="crit-btn-leave">
+            <i class="fas fa-walking"></i> LEAVE ZONE
+          </button>
+          <button id="btn-dismiss-critical" class="crit-btn-dismiss">
+            <i class="fas fa-check"></i> I Understand
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== SALARY CREDIT CELEBRATION (Rule 5) ===================== -->
+    <div id="salary-overlay" class="salary-overlay hidden">
+      <div class="salary-content">
+        <div class="confetti-wrap" id="confetti-wrap"></div>
+        <div class="salary-icon"><i class="fas fa-piggy-bank"></i></div>
+        <h2>Salary Received!</h2>
+        <p id="salary-credit-amount" class="salary-gross">₹85,000 Credited</p>
+        <div class="salary-split-visual">
+          <div class="split-item split-savings">
+            <span class="split-label">Locked Savings</span>
+            <span id="salary-locked" class="split-amount">₹42,500</span>
+            <span class="split-pct">50%</span>
+          </div>
+          <div class="split-divider"><i class="fas fa-arrows-split-up-and-left"></i></div>
+          <div class="split-item split-spend">
+            <span class="split-label">Spendable</span>
+            <span id="salary-spendable" class="split-amount">₹42,500</span>
+            <span class="split-pct">50%</span>
+          </div>
+        </div>
+        <button id="btn-salary-ok" class="btn-pill">Start Fresh Month 🎯</button>
+      </div>
+    </div>
+
+    <!-- ===================== TOAST NOTIFICATION AREA ===================== -->
+    <div id="toast-area" class="toast-area"></div>
+
+    <!-- ===================== GEO-FENCE MODAL (Rule 3) ===================== -->
+    <div id="geo-modal" class="geo-modal hidden">
+      <div class="geo-modal-content">
+        <div id="geo-modal-icon" class="geo-icon-wrap"><i class="fas fa-location-dot"></i></div>
+        <h3 id="geo-modal-title">Entered Zone</h3>
+        <p id="geo-modal-body" class="geo-body"></p>
+        <div class="geo-budget-bar-wrap">
+          <div class="geo-budget-label">
+            <span>Category Budget</span>
+            <span id="geo-budget-text">₹0 left</span>
+          </div>
+          <div class="geo-bar-bg"><div id="geo-bar-fill" class="geo-bar-fill"></div></div>
+        </div>
+        <div class="geo-soft-cap-tag" id="geo-soft-cap-tag">
+          <i class="fas fa-shield-halved"></i>
+          <span id="geo-soft-cap-text">₹1,200 soft-cap applied for 2 hrs</span>
+        </div>
+        <div class="geo-btns">
+          <button id="geo-ok" class="btn-pill">Got it</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== MOBILE APP SHELL ===================== -->
+    <div class="phone-shell">
+
+      <!-- Status Bar -->
+      <div class="status-bar">
+        <span class="sb-time" id="live-time">10:41</span>
+        <div class="sb-right">
+          <i class="fas fa-location-dot sb-icon" id="sb-gps-icon" title="GPS Status"></i>
+          <i class="fas fa-wifi sb-icon"></i>
+          <i class="fas fa-battery-three-quarters sb-icon"></i>
+        </div>
+      </div>
+
+      <!-- Nav Tabs -->
+      <nav class="nav-tabs" id="nav-tabs">
+        <button class="nav-tab active" data-view="dashboard"><i class="fas fa-chart-pie"></i><span>Dashboard</span></button>
+        <button class="nav-tab" data-view="budgets"><i class="fas fa-wallet"></i><span>Budgets</span></button>
+        <button class="nav-tab" data-view="sms"><i class="fas fa-comment-sms"></i><span>SMS Feed</span></button>
+        <button class="nav-tab" data-view="insights"><i class="fas fa-brain"></i><span>Insights</span></button>
+      </nav>
+
+      <!-- ========= VIEW: DASHBOARD ========= -->
+      <div class="view active" id="view-dashboard">
+
+        <!-- Header -->
+        <div class="dash-header">
+          <div>
+            <p class="dash-greeting" id="dash-greeting">Good morning</p>
+            <h2 class="dash-name">Thanushree 👋</h2>
+          </div>
+          <button class="sim-toggle-btn" id="sim-toggle-btn" title="Open Simulator">
+            <i class="fas fa-sliders"></i>
+          </button>
+        </div>
+
+        <!-- Health Score Ring -->
+        <div class="health-ring-card glass">
+          <div class="health-ring-wrap">
+            <svg viewBox="0 0 120 120" class="ring-svg">
+              <circle class="ring-track" cx="60" cy="60" r="50"/>
+              <circle class="ring-progress" id="ring-progress" cx="60" cy="60" r="50"
+                stroke-dasharray="314" stroke-dashoffset="47" />
+            </svg>
+            <div class="ring-center">
+              <span class="ring-score" id="ring-score">85</span>
+              <span class="ring-label">Health</span>
+            </div>
+          </div>
+          <div class="health-detail">
+            <h3 id="health-status-text">Low Risk 🟢</h3>
+            <p id="health-sub">Your finances are stable</p>
+            <div class="health-factors">
+              <div class="hf-item"><span class="hf-dot green"></span>Savings Rate: 50%</div>
+              <div class="hf-item"><span id="hf-daily-dot" class="hf-dot green"></span><span id="hf-daily-text">Daily Limit: OK</span></div>
+              <div class="hf-item"><span class="hf-dot yellow"></span>Emergency Fund: 30%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GPS Status Card -->
+        <div class="gps-card glass" id="gps-card">
+          <div class="gps-left">
+            <div class="gps-pulse-icon"><i class="fas fa-location-crosshairs"></i></div>
+            <div>
+              <p class="gps-status-text" id="gps-status-text">Location: Off</p>
+              <p class="gps-location-text" id="gps-location-text">Enable for geo-alerts</p>
+            </div>
+          </div>
+          <button class="btn-gps-enable" id="btn-gps-enable">Enable</button>
+        </div>
+
+        <!-- Daily Limit Tracker -->
+        <div class="glass daily-card">
+          <div class="daily-row">
+            <div>
+              <p class="label">Daily Spent</p>
+              <h3 id="daily-spent-display">₹0</h3>
+            </div>
+            <div class="daily-right">
+              <p class="label">Limit</p>
+              <h3>₹2,800</h3>
+            </div>
+          </div>
+          <div class="daily-bar-bg">
+            <div id="daily-bar" class="daily-bar safe" style="width:0%"></div>
+          </div>
+          <div class="daily-row" style="margin-top:8px;">
+            <span id="daily-safe-msg" class="daily-msg safe-msg"><i class="fas fa-shield-halved"></i> Silent Mode Active</span>
+            <span id="daily-remaining">₹2,800 left</span>
+          </div>
+        </div>
+
+        <!-- Finance Cards -->
+        <div class="fin-cards">
+          <div class="fin-card glass">
+            <div class="fin-card-icon savings"><i class="fas fa-lock"></i></div>
+            <p class="fin-card-label">Savings Locked</p>
+            <h3 id="card-savings">₹0</h3>
+            <span class="fin-card-sub">50% Protected</span>
+          </div>
+          <div class="fin-card glass">
+            <div class="fin-card-icon spendable"><i class="fas fa-credit-card"></i></div>
+            <p class="fin-card-label">Spendable</p>
+            <h3 id="card-spendable">₹0</h3>
+            <span class="fin-card-sub">This Month</span>
+          </div>
+        </div>
+
+        <!-- Emergency Fund -->
+        <div class="glass emerg-card">
+          <div class="emerg-header">
+            <span><i class="fas fa-shield-virus"></i> Emergency Fund</span>
+            <span id="emerg-pct">30%</span>
+          </div>
+          <div class="daily-bar-bg">
+            <div id="emerg-bar" class="daily-bar warning" style="width:30%"></div>
+          </div>
+          <p class="emerg-sub" id="emerg-sub">₹76,500 of ₹2,55,000 target</p>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="section-header">
+          <h4>Recent Activity</h4>
+        </div>
+        <div id="tx-list" class="tx-list">
+          <div class="tx-empty">No transactions yet. Simulate via <i class="fas fa-sliders"></i></div>
+        </div>
+      </div>
+
+      <!-- ========= VIEW: BUDGETS ========= -->
+      <div class="view" id="view-budgets">
+        <div class="view-header"><h2>Budget Tracker</h2><p>Monthly Category Limits</p></div>
+        <div id="budget-list" class="budget-list"></div>
+      </div>
+
+      <!-- ========= VIEW: SMS FEED ========= -->
+      <div class="view" id="view-sms">
+        <div class="view-header">
+          <h2>SMS Parser</h2>
+          <p>AI-parsed bank messages</p>
+        </div>
+        <div class="sms-input-wrap glass">
+          <textarea id="sms-input" class="sms-textarea" placeholder="Paste a bank SMS here (e.g. 'Your HDFC Bank account has been debited with INR 850.00 on 12-May-26. Info: SWIGGY')"></textarea>
+          <button id="sms-parse-btn" class="btn-pill full-width">
+            <i class="fas fa-wand-magic-sparkles"></i> Parse SMS
+          </button>
+        </div>
+        <div id="sms-result" class="sms-result hidden"></div>
+        <div class="section-header"><h4>Parsed Feed</h4></div>
+        <div id="sms-feed" class="sms-feed">
+          <div class="tx-empty">No SMS parsed yet</div>
+        </div>
+      </div>
+
+      <!-- ========= VIEW: INSIGHTS ========= -->
+      <div class="view" id="view-insights">
+        <div class="view-header"><h2>AI Insights</h2><p>Monthly Financial Summary</p></div>
+        <div id="insights-content" class="insights-content"></div>
+      </div>
+
+    </div><!-- end phone-shell -->
+
+    <!-- ===================== SIMULATOR PANEL ===================== -->
+    <div id="sim-panel" class="sim-panel hidden">
+      <div class="sim-header">
+        <h2><i class="fas fa-flask"></i> Event Simulator</h2>
+        <button id="sim-close-btn" class="icon-btn"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="sim-body">
+
+        <div class="sim-group">
+          <h3>💰 Salary & Reset</h3>
+          <button class="sim-btn" id="sim-salary">Credit ₹85,000 Salary (Rule 5)</button>
+          <button class="sim-btn sim-danger" id="sim-reset">Reset All Data</button>
+        </div>
+
+        <div class="sim-group">
+          <h3>🧾 Transactions</h3>
+          <button class="sim-btn" id="sim-safe-500">+ ₹500 Uber (Silent)</button>
+          <button class="sim-btn" id="sim-dining-3000">+ ₹3,000 Dining (Daily Breach)</button>
+          <button class="sim-btn" id="sim-medical-5000">+ ₹5,000 Medical (Rule 2)</button>
+          <button class="sim-btn" id="sim-shopping-2000">+ ₹2,000 Shopping</button>
+          <button class="sim-btn" id="sim-grocery-1200">+ ₹1,200 Groceries</button>
+        </div>
+
+        <div class="sim-group">
+          <h3>📍 Geo-Fence (Rule 3)</h3>
+          <button class="sim-btn" id="sim-enter-restaurant">Enter Restaurant Zone</button>
+          <button class="sim-btn" id="sim-enter-mall">Enter Phoenix Mall</button>
+          <button class="sim-btn" id="sim-enter-cafe">Enter Café</button>
+        </div>
+
+        <div class="sim-group">
+          <h3>🚨 Critical Zone (Rule 4)</h3>
+          <button class="sim-btn sim-warning" id="sim-enter-club">Enter Club at 11:30 PM</button>
+          <button class="sim-btn sim-warning" id="sim-enter-bar">Enter Bar at 10:00 PM</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end #app -->
+
+  <script src="app.js"></script>
+</body>
+</html>
